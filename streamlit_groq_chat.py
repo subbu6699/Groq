@@ -19,13 +19,9 @@ def initialize_groq_client(api_key, base_url):
 def get_models(api_key, base_url):
     client = initialize_groq_client(api_key, base_url)
     try:
-        # Fetch models using the correct endpoint path
-        models_response = client.get(f"{base_url}/models")
-        if models_response.status_code == 200:
-            models = models_response.json().get("models", [])
-            return {model["name"]: model["id"] for model in models}
-        else:
-            return {}
+        # Use the list method to fetch available models
+        models = client.models.list()
+        return {model["name"]: model["id"] for model in models}
     except Exception as e:
         st.sidebar.error(f"Error fetching models: {str(e)}")
         return {}
