@@ -8,16 +8,16 @@ st.set_page_config(page_title="Groq Model Chat", layout='wide')
 # Sidebar Inputs
 st.sidebar.header("Groq API Configuration")
 api_key = st.sidebar.text_input("API Key", value=os.getenv("GROQ_API_KEY", ""), type="password")
-base_url = st.sidebar.text_input("Base URL", "https://api.groq.com")
+base_url = st.sidebar.text_input("Base URL", "https://api.groq.com/openai/v1")
 
 # Initialize Groq Client
-def initialize_groq_client(api_key):
-    return Groq(api_key=api_key)
+def initialize_groq_client(api_key, base_url):
+    return Groq(api_key=api_key, base_url=base_url)
 
 # Fetch models with caching
 @st.cache_data(show_spinner=False)
-def get_models(api_key):
-    client = initialize_groq_client(api_key)
+def get_models(api_key, base_url):
+    client = initialize_groq_client(api_key, base_url)
     try:
         models = client.models.list()
         return {model["name"]: model["id"] for model in models}
@@ -27,7 +27,7 @@ def get_models(api_key):
 
 # Initialize Groq Client and Fetch Models
 if api_key:
-    models = get_models(api_key)
+    models = get_models(api_key, base_url)
 
     # Sidebar Inputs for Model Selection
     model_name = st.sidebar.selectbox("Select Model", options=list(models.keys()))
@@ -49,7 +49,7 @@ if api_key:
             st.error("Please select a Model.")
         else:
             try:
-                client = initialize_groq_client(api_key)  # Initialize client here for sending messages
+                client = initialize_groq_client(api_key, base_url)  # Initialize client here for sending messages
                 chat_completion = client.chat.completions.create(
                     messages=[{"role": "user", "content": input_text}],
                     model=model_id
