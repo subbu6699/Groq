@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 from groq import Groq
 
@@ -7,7 +6,7 @@ st.set_page_config(page_title="Groq Model Chat", layout='wide')
 
 # Sidebar Inputs
 st.sidebar.header("Groq API Configuration")
-api_key = st.sidebar.text_input("API Key", value=os.getenv("GROQ_API_KEY", ""), type="password")
+api_key = st.sidebar.text_input("API Key", value="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", type="password")
 base_url = st.sidebar.text_input("Base URL", "https://api.groq.com/openai/v1")
 
 # Initialize Groq Client
