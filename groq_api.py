@@ -3,7 +3,7 @@ import requests
 
 class GroqAPI:
     def __init__(self, api_key, base_url="https://api.groq.com"):
-        self.api_key = api_key
+        self.api_key = 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
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
