@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from groq import Groq
 
@@ -6,7 +7,7 @@ st.set_page_config(page_title="Groq Model Chat", layout='wide')
 
 # Sidebar Inputs
 st.sidebar.header("Groq API Configuration")
-api_key = st.sidebar.text_input("API Key", value="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", type="password")
+api_key = st.sidebar.text_input("API Key", value=os.getenv("GROQ_API_KEY", "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"), type="password")
 base_url = st.sidebar.text_input("Base URL", "https://api.groq.com/openai/v1")
 
 # Initialize Groq Client
@@ -18,7 +19,6 @@ def initialize_groq_client(api_key, base_url):
 def get_models(api_key, base_url):
     client = initialize_groq_client(api_key, base_url)
     try:
-        # Use the list method to fetch available models
         models = client.models.list()
         return {model["name"]: model["id"] for model in models}
     except Exception as e:
@@ -49,7 +49,7 @@ if api_key:
             st.error("Please select a Model.")
         else:
             try:
-                client = initialize_groq_client(api_key, base_url)  # Initialize client here for sending messages
+                client = initialize_groq_client(api_key, base_url)
                 chat_completion = client.chat.completions.create(
                     messages=[{"role": "user", "content": input_text}],
                     model=model_id
