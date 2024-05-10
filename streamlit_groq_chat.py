@@ -8,7 +8,7 @@ st.set_page_config(page_title="Groq Model Chat", layout='wide')
 # Sidebar Inputs
 st.sidebar.header("Groq API Configuration")
 api_key = st.sidebar.text_input("API Key", value=os.getenv("GROQ_API_KEY", ""), type="password")
-base_url = st.sidebar.text_input("Base URL", "https://api.groq.com/openai/v1/models")
+base_url = st.sidebar.text_input("Base URL", "https://api.groq.com/openai/v1/models/")
 
 # Initialize Groq Client
 def initialize_groq_client(api_key, base_url):
