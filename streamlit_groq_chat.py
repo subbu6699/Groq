@@ -1,4 +1,3 @@
-# streamlit_groq_chat.py
 import os
 import streamlit as st
 from groq import Groq
@@ -11,26 +10,24 @@ st.sidebar.header("Groq API Configuration")
 api_key = st.sidebar.text_input("API Key", value=os.getenv("GROQ_API_KEY", ""), type="password")
 base_url = st.sidebar.text_input("Base URL", "https://api.groq.com")
 
-# Function to Initialize Groq Client
-@st.cache_data(show_spinner=False)
+# Initialize Groq Client
 def initialize_groq_client(api_key):
     return Groq(api_key=api_key)
 
-# Initialize Groq Client if API Key is provided
-if api_key:
+# Fetch models with caching
+@st.cache_data(show_spinner=False)
+def get_models(api_key):
     client = initialize_groq_client(api_key)
+    try:
+        models = client.models.list()
+        return {model["name"]: model["id"] for model in models}
+    except Exception as e:
+        st.sidebar.error(f"Error fetching models: {str(e)}")
+        return {}
 
-    # Fetch the list of available models
-    def get_models(client):
-        try:
-            models = client.models.list()
-            return {model["name"]: model["id"] for model in models}
-        except Exception as e:
-            st.sidebar.error(f"Error fetching models: {str(e)}")
-            return {}
-
-    # Retrieve models from Groq API
-    models = get_models(client)
+# Initialize Groq Client and Fetch Models
+if api_key:
+    models = get_models(api_key)
 
     # Sidebar Inputs for Model Selection
     model_name = st.sidebar.selectbox("Select Model", options=list(models.keys()))
@@ -52,6 +49,7 @@ if api_key:
             st.error("Please select a Model.")
         else:
             try:
+                client = initialize_groq_client(api_key)  # Initialize client here for sending messages
                 chat_completion = client.chat.completions.create(
                     messages=[{"role": "user", "content": input_text}],
                     model=model_id
