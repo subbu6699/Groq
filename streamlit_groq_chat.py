@@ -2,10 +2,6 @@
 import os
 import streamlit as st
 from groq import Groq
-from dotenv import load_dotenv
-
-# Load environment variables from .env file (if available)
-load_dotenv()
 
 # Streamlit Page Configuration
 st.set_page_config(page_title="Groq Model Chat", layout='wide')
